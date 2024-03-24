@@ -1,0 +1,15 @@
+@PZE_Minimal_Api_HostAddress = https://localhost:7281
+
+GET {{PZE_Minimal_Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{PZE_Minimal_Api_HostAddress}}/login
+Content-Type:application/json
+
+{
+"email":"pawel@gmail.com",
+"password":"pawel"
+}
+###
