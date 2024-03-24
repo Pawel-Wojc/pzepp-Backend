@@ -27,17 +27,17 @@ app.UseHttpsRedirection();
 
 
 
+
+#region Users-login
 //User Dump data
-List < User > users = new List<User>();
+List< User > users = new List<User>();
 users.Add(new User { Id = Guid.NewGuid(), Name = "Pawel", Surname="nazwisko", Email = "pawel@gmail.com", Password = "pawel", Role = "Student" });
 users.Add(new User { Id = Guid.NewGuid(), Name = "Adam", Surname = "nazwisko", Email = "adam@gmail.com", Password = "adam", Role = "Teacher" });
 users.Add(new User { Id = Guid.NewGuid(), Name = "Tomek", Surname = "nazwisko", Email = "tomek@gmail.com", Password = "tomek", Role = "Admin" });
 
 app.MapPost("/GetJwt", (UserDto userDto) =>
 {
-
     var user = users.FirstOrDefault(u => u.Email == userDto.Email && u.Password == userDto.Password);
-
     if (user != null)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super_secret_key_to_generate_jwt_tokens"));
@@ -59,21 +59,40 @@ app.MapPost("/GetJwt", (UserDto userDto) =>
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = jwtTokenHandler.WriteToken(token);
         return Results.Ok(jwtToken);
-
     }
     else {
         return Results.Unauthorized();
     }
-    
+});
+#endregion
 
+
+#region User-register
+app.MapPost("/Register-user", (RegisterDto loginDto) => {
 
 });
+#endregion
+
+#region courses 
+app.MapGet("/UserCourses", () =>
+{
+
+});
+
+app.MapGet("/AllCourses", () =>
+{
+
+});
+#endregion
 
 app.Run();
 
 
-
+record RegisterDto (string Name, string Surname, string Email, string Password);
 record UserDto(string Email, string Password);
+
+
+
 
 public class User
 {
