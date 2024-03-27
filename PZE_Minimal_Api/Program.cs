@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
+
+
 
 var app = builder.Build();
+
+
+app.UseCors(builder => builder
+.AllowAnyOrigin()
+.AllowAnyMethod()
+.AllowAnyHeader()
+);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -28,7 +39,7 @@ app.UseHttpsRedirection();
 
 
 
-#region Users-login
+#region Users
 //User Dump data
 List< User > users = new List<User>();
 users.Add(new User { Id = Guid.NewGuid(), Name = "Pawel", Surname="nazwisko", Email = "pawel@gmail.com", Password = "pawel", Role = "Student" });
@@ -64,14 +75,22 @@ app.MapPost("/GetJwt", (UserDto userDto) =>
         return Results.Unauthorized();
     }
 });
-#endregion
 
 
-#region User-register
 app.MapPost("/Register-user", (RegisterDto loginDto) => {
+    users.Add(new User { Id = Guid.NewGuid(), Name = loginDto.Name, Surname = loginDto.Surname, Email = loginDto.Email, Password = loginDto.Password, Role = "Student" });
+    return ("Register user ok");
+});
+
+app.MapGet("/GetAllUsers", () =>
+{
+    return (users);
 
 });
 #endregion
+
+
+
 
 #region courses 
 app.MapGet("/UserCourses", () =>
